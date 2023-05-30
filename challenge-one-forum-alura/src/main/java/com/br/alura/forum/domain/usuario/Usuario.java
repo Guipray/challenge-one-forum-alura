@@ -1,10 +1,11 @@
-package com.br.alura.modelo;
+package com.br.alura.forum.domain.usuario;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,5 +25,23 @@ public class Usuario {
 	private String nome;
 	private String email;
 	private String senha;
+	
+	public Usuario(@Valid DadosUsuario dados) {
+		this.nome = dados.nome();
+		this.email = dados.email();
+		this.senha = dados.senha();
+	}
+
+	public void atualizarInformacoes(DadosUsuario dados) {
+		if (dados.nome() != null) {
+			this.nome = dados.nome();
+		}
+		if (dados.email() != null) {
+			this.email = dados.email();
+		}
+		if (dados.senha() != null) {
+			this.senha = dados.senha();
+		}
+	}
 
 }

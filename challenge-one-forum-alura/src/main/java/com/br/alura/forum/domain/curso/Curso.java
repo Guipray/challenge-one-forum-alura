@@ -1,4 +1,4 @@
-package com.br.alura.modelo;
+package com.br.alura.forum.domain.curso;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,4 +24,18 @@ public class Curso {
 	private String nome;
 	private String categoria;
 
+	public Curso(DadosCurso curso) {
+		this.nome = curso.nome();
+		this.categoria = curso.categoria();
+	}
+
+	public void atualizaInformacoes(DadosCurso dados) {
+		if (dados.nome() != null) {
+			this.nome = dados.nome();
+		}
+		if (dados.categoria() != null) {
+			this.categoria = dados.categoria();
+		}
+	}	
+	
 }
