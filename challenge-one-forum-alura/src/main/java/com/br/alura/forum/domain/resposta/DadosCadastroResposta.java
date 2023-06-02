@@ -1,22 +1,20 @@
-package com.br.alura.forum.domain.topico;
+package com.br.alura.forum.domain.resposta;
 
-import com.br.alura.forum.domain.curso.DadosCurso;
+import com.br.alura.forum.domain.topico.DadosCadastroTopico;
+import com.br.alura.forum.domain.topico.Topico;
 import com.br.alura.forum.domain.usuario.DadosUsuario;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record DadosCadastroTopico(
-		@NotBlank
-		String titulo,
+public record DadosCadastroResposta(
 		@NotBlank
 		String mensagem,
-		StatusTopico status,
 		@NotNull
 		@Valid
-		DadosUsuario autor,
+		DadosCadastroTopico topico,
 		@NotNull
 		@Valid
-		DadosCurso curso) {
+		DadosUsuario autor) {
 }

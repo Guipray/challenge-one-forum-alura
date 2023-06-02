@@ -21,11 +21,11 @@ public class TopicoDTO {
 	private Long id;
 	private String titulo;
 	private String mensagem;
-	private LocalDateTime dataCriacao = LocalDateTime.now();
-	private StatusTopico status = StatusTopico.NAO_RESPONDIDO;
+	private LocalDateTime dataCriacao;
+	private StatusTopico status;
 	private DadosDetalhamentoAutor autor;
 	private Curso curso;
-	private List<Resposta> respostas = new ArrayList<>();
+	private List<Resposta> respostas;
 	
 	public TopicoDTO(Topico topico) {
 		this.id = topico.getId();

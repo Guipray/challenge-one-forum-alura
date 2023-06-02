@@ -79,6 +79,9 @@ public class Topico {
 		if (dados.mensagem() != null) {
 			this.mensagem = dados.mensagem();
 		}
+		if (dados.status() != null) {
+			this.status = dados.status();
+		}
 		if (dados.autor() != null) {
 			this.autor.atualizarInformacoes(dados.autor());
 		}
@@ -89,6 +92,10 @@ public class Topico {
 
 	public void excluir() {
 		this.ativo = false;
+	}
+
+	public void setResposta(Resposta resposta) {
+		this.respostas.add(resposta);
 	}
 
 }

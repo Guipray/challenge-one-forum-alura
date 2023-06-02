@@ -25,6 +25,7 @@ public class Usuario {
 	private String nome;
 	private String email;
 	private String senha;
+	private Boolean ativo;
 	
 	public Usuario(@Valid DadosUsuario dados) {
 		this.nome = dados.nome();
@@ -42,6 +43,22 @@ public class Usuario {
 		if (dados.senha() != null) {
 			this.senha = dados.senha();
 		}
+	}
+
+	public void atualizarInformacoes(@Valid DadosAtualizacaoUsuario dados) {
+		if (dados.nome() != null) {
+			this.nome = dados.nome();
+		}
+		if (dados.email() != null) {
+			this.email = dados.email();
+		}
+		if (dados.senha() != null) {
+			this.senha = dados.senha();
+		}
+	}
+
+	public void excluir() {
+		this.ativo = false;
 	}
 
 }

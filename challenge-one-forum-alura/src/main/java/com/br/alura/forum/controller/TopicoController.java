@@ -116,12 +116,12 @@ public class TopicoController {
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoTopico dados) {
-		var topico = topicoRepository.getReferenceById(id);
 		if (topicoRepository.findByTitulo(dados.titulo()) == null && topicoRepository.findByMensagem(dados.mensagem()) == null) {
+			var topico = topicoRepository.getReferenceById(id);
 			topico.atualizarInformacoes(dados);
 			return ResponseEntity.ok(new DadosDetalhamentoTopico(new TopicoDTO(topico)));
 		}
-		return ResponseEntity.status(HttpStatus.CONFLICT).body("Tópico duplicado!");
+		return ResponseEntity.status(HttpStatus.CONFLICT).body("Tópicos Duplicados!");
 	}
 	
 	@DeleteMapping("/{id}")

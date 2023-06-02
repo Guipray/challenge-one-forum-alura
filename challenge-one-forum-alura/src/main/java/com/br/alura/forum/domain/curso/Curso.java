@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class Curso {
 	private Long id;
 	private String nome;
 	private String categoria;
+	private Boolean ativo;
 
 	public Curso(DadosCurso curso) {
 		this.nome = curso.nome();
@@ -36,6 +38,18 @@ public class Curso {
 		if (dados.categoria() != null) {
 			this.categoria = dados.categoria();
 		}
+	}
+
+	public void atualizarInformacoes(@Valid DadosAtualizacaoCurso dados) {
+		if (dados.nome() != null) {
+			this.nome = dados.nome();
+		}
+		if (dados.categoria() != null) {
+			this.categoria = dados.categoria();
+		}
+	}
+
+	public void excluir() {
+		this.ativo = false;
 	}	
-	
 }
