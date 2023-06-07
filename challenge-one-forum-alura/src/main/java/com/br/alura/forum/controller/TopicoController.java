@@ -27,6 +27,7 @@ import com.br.alura.forum.domain.topico.TopicoDTO;
 import com.br.alura.forum.domain.topico.TopicoRepository;
 import com.br.alura.forum.domain.usuario.UsuarioRepository;
 
+import io.swagger.annotations.ApiOperation;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -48,6 +49,7 @@ public class TopicoController {
 	@Autowired
 	private CursoRepository cursoRepository;
 
+	@ApiOperation("Cadastrar Tópico")
 	@PostMapping
 	@Transactional
 	public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroTopico dados, UriComponentsBuilder uriBuilder) {
@@ -72,6 +74,7 @@ public class TopicoController {
 
 	}
 
+	@ApiOperation("Listar Tópico")
 	@GetMapping
 	public ResponseEntity<Page<DadosListagemTopico>> listar(@RequestParam(required = false) String nomeCurso,
 			@RequestParam(required = false) String anoCriacao,
@@ -106,6 +109,7 @@ public class TopicoController {
 		return ResponseEntity.ok(detalhamentoTopicos);
 	}
 	
+	@ApiOperation("Detalhar Tópico")
 	@GetMapping("/{id}")
 	public ResponseEntity detalhar(@PathVariable Long id) {
 		var topico = topicoRepository.getReferenceById(id);
@@ -113,6 +117,7 @@ public class TopicoController {
 		return ResponseEntity.ok(new DadosListagemTopico(new TopicoDTO(topico)));
 	}
 	
+	@ApiOperation("Atualizar Tópico")
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoTopico dados) {
@@ -124,6 +129,7 @@ public class TopicoController {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body("Tópicos Duplicados!");
 	}
 	
+	@ApiOperation("Excluir Tópico")
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity excluir(@PathVariable Long id) {

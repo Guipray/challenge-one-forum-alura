@@ -1,5 +1,12 @@
 package com.br.alura.forum.domain.usuario;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,7 +24,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Usuario {
+public class Usuario implements UserDetails {
+	
+	// Parte 6 na criação de Autenticação de Usuário
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +34,7 @@ public class Usuario {
 	private String nome;
 	private String email;
 	private String senha;
-	private Boolean ativo;
+	private Boolean ativo = true;
 	
 	public Usuario(@Valid DadosUsuario dados) {
 		this.nome = dados.nome();
@@ -59,6 +68,45 @@ public class Usuario {
 
 	public void excluir() {
 		this.ativo = false;
+	}
+	
+	public void setSenha(String token) {
+		this.senha = token;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+	}
+
+	@Override
+	public String getPassword() {
+		return senha;
+	}
+
+	@Override
+	public String getUsername() {
+		return email;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
 	}
 
 }

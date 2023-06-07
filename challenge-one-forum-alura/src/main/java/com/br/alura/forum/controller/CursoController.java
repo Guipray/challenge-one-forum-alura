@@ -23,6 +23,7 @@ import com.br.alura.forum.domain.curso.DadosCurso;
 import com.br.alura.forum.domain.curso.DadosDetalhamentoCurso;
 import com.br.alura.forum.domain.curso.DadosListagemCurso;
 
+import io.swagger.annotations.ApiOperation;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -44,6 +45,7 @@ public class CursoController {
 		return ResponseEntity.created(uri).body(new DadosDetalhamentoCurso(curso));
 	}
 
+	@ApiOperation("Listar Cursos")
 	@GetMapping
 	public ResponseEntity<Page<DadosListagemCurso>> listar(@RequestParam(required = false) String categoria,
 			@PageableDefault(size = 10, sort = { "nome" }) Pageable paginacao) {
@@ -62,6 +64,7 @@ public class CursoController {
 
 	}
 
+	@ApiOperation("Detalhar Curso")
 	@GetMapping("/{id}")
 	public ResponseEntity detalhar(@PathVariable Long id) {
 		var curso = repository.getReferenceById(id);
@@ -69,6 +72,7 @@ public class CursoController {
 		return ResponseEntity.ok(new DadosDetalhamentoCurso(curso));
 	}
 
+	@ApiOperation("Atualizar Curso")
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity atualizar(@PathVariable Long id, @RequestBody DadosAtualizacaoCurso dados) {
@@ -78,6 +82,7 @@ public class CursoController {
 		return ResponseEntity.ok(new DadosDetalhamentoCurso(curso));
 	}
 
+	@ApiOperation("Excluir Curso")
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity excluir(@PathVariable Long id) {

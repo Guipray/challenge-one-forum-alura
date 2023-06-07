@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +25,9 @@ import com.br.alura.forum.domain.usuario.DadosListagemUsuario;
 import com.br.alura.forum.domain.usuario.DadosUsuario;
 import com.br.alura.forum.domain.usuario.Usuario;
 import com.br.alura.forum.domain.usuario.UsuarioRepository;
+import com.br.alura.forum.infra.security.TokenService;
 
+import io.swagger.annotations.ApiOperation;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -34,12 +37,19 @@ public class UsuarioController {
 
 	@Autowired
 	private UsuarioRepository repository;
-
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	@ApiOperation("Cadastrar Usuário")
 	@PostMapping
 	@Transactional
 	public ResponseEntity cadastrar(@RequestBody @Valid DadosUsuario dados, UriComponentsBuilder uriBuilder) {
 		if (repository.findByEmail(dados.email()) == null && repository.findByNome(dados.nome()) == null) {
+			String encryptedPassword = passwordEncoder.encode(dados.senha());
 			var usuario = new Usuario(dados);
+			usuario.setSenha(encryptedPassword);
+			
 			repository.save(usuario);
 		
 			var uri = uriBuilder.path("/login/{id}").buildAndExpand(usuario.getId()).toUri();
@@ -49,6 +59,7 @@ public class UsuarioController {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body("Este email ou nome de usuário ja esta em uso!");
 	}
 	
+	@ApiOperation("Listar Usuário")
 	@GetMapping
 	public ResponseEntity<Page<DadosListagemUsuario>> listar(@RequestParam(required = false) String nomeUsuario,
 			@PageableDefault(size = 10, sort = { "nome" }) Pageable paginacao) {
@@ -66,6 +77,7 @@ public class UsuarioController {
 		return ResponseEntity.ok(detalhamentoUsuarios);
 	}
 	
+	@ApiOperation("Detalhar Usuário")
 	@GetMapping("/{id}")
 	public ResponseEntity detalhar(@PathVariable Long id) {
 		var usuario = repository.getReferenceById(id);
@@ -73,6 +85,7 @@ public class UsuarioController {
 		return ResponseEntity.ok(new DadosListagemUsuario(usuario));
 	}
 	
+	@ApiOperation("Atualizar Usuário")
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoUsuario dados) {
@@ -84,6 +97,7 @@ public class UsuarioController {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body("Usuário duplicado!");
 	}
 	
+	@ApiOperation("Excluir Usuário")
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity excluir(@PathVariable Long id) {

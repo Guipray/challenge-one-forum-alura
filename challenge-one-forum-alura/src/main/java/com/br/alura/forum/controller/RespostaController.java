@@ -38,6 +38,7 @@ import com.br.alura.forum.domain.usuario.DadosDetalhamentoUsuario;
 import com.br.alura.forum.domain.usuario.DadosUsuario;
 import com.br.alura.forum.domain.usuario.UsuarioRepository;
 
+import io.swagger.annotations.ApiOperation;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -54,6 +55,7 @@ public class RespostaController {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 
+	@ApiOperation("Cadastrar Resposta")
 	@PostMapping
 	@Transactional
 	public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroResposta dados, UriComponentsBuilder uriBuilder) {
@@ -83,6 +85,7 @@ public class RespostaController {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário ou Tópico não encontrado!");
 	}
 
+	@ApiOperation("Listar Resposta")
 	@GetMapping
 	public ResponseEntity<Page<DadosListagemResposta>> listar(@RequestParam(required = false) String anoCriacao,
 			@PageableDefault(size = 10, sort = { "dataCriacao" }) Pageable paginacao) {
@@ -113,6 +116,7 @@ public class RespostaController {
 		return ResponseEntity.ok(detalhamentoRespostas);
 	}
 
+	@ApiOperation("Detalhar Resposta")
 	@GetMapping("/{id}")
 	public ResponseEntity detalhar(@PathVariable Long id) {
 		var resposta = respostaRepository.getReferenceById(id);
@@ -120,6 +124,7 @@ public class RespostaController {
 		return ResponseEntity.ok(new DadosDetalhamentoResposta(new RespostaDTO(resposta)));
 	}
 
+	@ApiOperation("Atualizar Resposta")
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoResposta dados) {
@@ -129,6 +134,7 @@ public class RespostaController {
 		return ResponseEntity.ok(new DadosDetalhamentoResposta(resposta));
 	}
 
+	@ApiOperation("Excluir Resposta")
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity excluir(@PathVariable Long id) {
