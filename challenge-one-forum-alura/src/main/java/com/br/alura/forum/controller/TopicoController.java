@@ -12,12 +12,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.br.alura.forum.domain.curso.CursoRepository;
+import com.br.alura.forum.domain.curso.DadosDetalhamentoCurso;
+import com.br.alura.forum.domain.resposta.DadosListagemResposta;
 import com.br.alura.forum.domain.topico.DadosAtualizacaoTopico;
 import com.br.alura.forum.domain.topico.DadosCadastroTopico;
 import com.br.alura.forum.domain.topico.DadosDetalhamentoTopico;
@@ -27,7 +30,14 @@ import com.br.alura.forum.domain.topico.TopicoDTO;
 import com.br.alura.forum.domain.topico.TopicoRepository;
 import com.br.alura.forum.domain.usuario.UsuarioRepository;
 
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -38,6 +48,7 @@ import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("topicos")
+@Tag(name = "Tópicos", description = "CRUD completo dos tópicos")
 public class TopicoController {
 
 	@Autowired
@@ -49,9 +60,11 @@ public class TopicoController {
 	@Autowired
 	private CursoRepository cursoRepository;
 
-	@ApiOperation("Cadastrar Tópico")
 	@PostMapping
 	@Transactional
+	@Operation(summary = "Cadastra um novo tópico", description = "Adiciona um novo tópico fórum", security = { @SecurityRequirement(name = "bearer-key") })
+	@ApiResponse(responseCode = "201", description = "Tópico criado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = DadosDetalhamentoTopico.class)))
+	@ApiResponse(responseCode = "405", description = "Entrada inválida")
 	public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroTopico dados, UriComponentsBuilder uriBuilder) {
 		
 		if (topicoRepository.findByTitulo(dados.titulo()) == null && topicoRepository.findByMensagem(dados.mensagem()) == null) {
@@ -74,8 +87,9 @@ public class TopicoController {
 
 	}
 
-	@ApiOperation("Listar Tópico")
 	@GetMapping
+	@Operation(summary = "Lista todos os tópicos", description = "Retorna uma lista com todos os tópicos", security = { @SecurityRequirement(name = "bearer-key") })
+	@ApiResponse(responseCode = "200", description = "Listagem bem sucedida", content = @Content(mediaType = "application/json", schema = @Schema(implementation = DadosListagemTopico.class)))
 	public ResponseEntity<Page<DadosListagemTopico>> listar(@RequestParam(required = false) String nomeCurso,
 			@RequestParam(required = false) String anoCriacao,
 			@PageableDefault(size = 10, sort = { "dataCriacao" }) Pageable paginacao) {
@@ -109,17 +123,19 @@ public class TopicoController {
 		return ResponseEntity.ok(detalhamentoTopicos);
 	}
 	
-	@ApiOperation("Detalhar Tópico")
 	@GetMapping("/{id}")
+	@Operation(summary = "Detalha um tópico pelo id", description = "Retorna todos os atributos do tópico", security = { @SecurityRequirement(name = "bearer-key") })
+	@ApiResponse(responseCode = "200", description = "Detalhamento bem sucedido", content = @Content(mediaType = "application/json", schema = @Schema(implementation = DadosListagemTopico.class)))
 	public ResponseEntity detalhar(@PathVariable Long id) {
 		var topico = topicoRepository.getReferenceById(id);
 		
 		return ResponseEntity.ok(new DadosListagemTopico(new TopicoDTO(topico)));
 	}
 	
-	@ApiOperation("Atualizar Tópico")
 	@PutMapping("/{id}")
 	@Transactional
+	@Operation(summary = "Atualiza um tópico pelo id", description = "Atualiza as informações do tópico", security = { @SecurityRequirement(name = "bearer-key") })
+	@ApiResponse(responseCode = "200", description = "Atualização bem sucedida", content = @Content(mediaType = "application/json", schema = @Schema(implementation = DadosDetalhamentoTopico.class)))
 	public ResponseEntity atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoTopico dados) {
 		if (topicoRepository.findByTitulo(dados.titulo()) == null && topicoRepository.findByMensagem(dados.mensagem()) == null) {
 			var topico = topicoRepository.getReferenceById(id);
@@ -129,9 +145,9 @@ public class TopicoController {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body("Tópicos Duplicados!");
 	}
 	
-	@ApiOperation("Excluir Tópico")
 	@DeleteMapping("/{id}")
 	@Transactional
+	@Operation(summary = "Exclui um tópico pelo id", description = "Deleta um tópico", security = { @SecurityRequirement(name = "bearer-key") })
 	public ResponseEntity excluir(@PathVariable Long id) {
 		var topico = topicoRepository.getReferenceById(id);
 		topico.excluir();

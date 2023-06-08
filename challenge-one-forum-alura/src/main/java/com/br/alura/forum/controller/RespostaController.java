@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.br.alura.forum.domain.curso.DadosCurso;
+import com.br.alura.forum.domain.curso.DadosDetalhamentoCurso;
 import com.br.alura.forum.domain.resposta.DadosAtualizacaoResposta;
 import com.br.alura.forum.domain.resposta.DadosCadastroResposta;
 import com.br.alura.forum.domain.resposta.DadosDetalhamentoResposta;
@@ -37,13 +38,19 @@ import com.br.alura.forum.domain.topico.TopicoRepository;
 import com.br.alura.forum.domain.usuario.DadosDetalhamentoUsuario;
 import com.br.alura.forum.domain.usuario.DadosUsuario;
 import com.br.alura.forum.domain.usuario.UsuarioRepository;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("respostas")
+@Tag(name = "Respostas", description = "CRUD completo das respostas")
 public class RespostaController {
 
 	@Autowired
@@ -55,9 +62,11 @@ public class RespostaController {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 
-	@ApiOperation("Cadastrar Resposta")
 	@PostMapping
 	@Transactional
+	@Operation(summary = "Cadastra uma nova resposta", description = "Adiciona uma nova resposta ao fórum", security = { @SecurityRequirement(name = "bearer-key") })
+	@ApiResponse(responseCode = "201", description = "Resposta criado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = DadosDetalhamentoResposta.class)))
+	@ApiResponse(responseCode = "405", description = "Entrada inválida")
 	public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroResposta dados, UriComponentsBuilder uriBuilder) {
 		var topico = topicoRepository.findByTitulo(dados.topico().titulo());
 		var autor = usuarioRepository.findByEmail(dados.autor().email());
@@ -85,8 +94,9 @@ public class RespostaController {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário ou Tópico não encontrado!");
 	}
 
-	@ApiOperation("Listar Resposta")
 	@GetMapping
+	@Operation(summary = "Lista todas as respostas", description = "Retorna uma lista com todos as respostas", security = { @SecurityRequirement(name = "bearer-key") })
+	@ApiResponse(responseCode = "200", description = "Listagem bem sucedida", content = @Content(mediaType = "application/json", schema = @Schema(implementation = DadosListagemResposta.class)))
 	public ResponseEntity<Page<DadosListagemResposta>> listar(@RequestParam(required = false) String anoCriacao,
 			@PageableDefault(size = 10, sort = { "dataCriacao" }) Pageable paginacao) {
 
@@ -111,22 +121,23 @@ public class RespostaController {
 		}
 
 		var detalhamentoRespostas = page.map(resposta -> new DadosListagemResposta(new RespostaDTO(resposta)));
-		System.out.println(detalhamentoRespostas);
 
 		return ResponseEntity.ok(detalhamentoRespostas);
 	}
 
-	@ApiOperation("Detalhar Resposta")
 	@GetMapping("/{id}")
+	@Operation(summary = "Detalha uma resposta pelo id", description = "Retorna todos os atributos da resposta", security = { @SecurityRequirement(name = "bearer-key") })
+	@ApiResponse(responseCode = "200", description = "Detalhamento bem sucedido", content = @Content(mediaType = "application/json", schema = @Schema(implementation = DadosDetalhamentoResposta.class)))
 	public ResponseEntity detalhar(@PathVariable Long id) {
 		var resposta = respostaRepository.getReferenceById(id);
 
 		return ResponseEntity.ok(new DadosDetalhamentoResposta(new RespostaDTO(resposta)));
 	}
 
-	@ApiOperation("Atualizar Resposta")
 	@PutMapping("/{id}")
 	@Transactional
+	@Operation(summary = "Atualiza uma resposta pelo id", description = "Atualiza as informações da resposta", security = { @SecurityRequirement(name = "bearer-key") })
+	@ApiResponse(responseCode = "200", description = "Atualização bem sucedida", content = @Content(mediaType = "application/json", schema = @Schema(implementation = DadosDetalhamentoResposta.class)))
 	public ResponseEntity atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoResposta dados) {
 		var resposta = respostaRepository.getReferenceById(id);
 		resposta.atualizarInformacoes(dados);
@@ -134,9 +145,9 @@ public class RespostaController {
 		return ResponseEntity.ok(new DadosDetalhamentoResposta(resposta));
 	}
 
-	@ApiOperation("Excluir Resposta")
 	@DeleteMapping("/{id}")
 	@Transactional
+	@Operation(summary = "Exclui uma resposta pelo id", description = "Deleta uma resposta", security = { @SecurityRequirement(name = "bearer-key") })
 	public ResponseEntity excluir(@PathVariable Long id) {
 		var resposta = respostaRepository.getReferenceById(id);
 		resposta.excluir();
