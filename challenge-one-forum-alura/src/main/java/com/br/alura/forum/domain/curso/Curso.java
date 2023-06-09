@@ -24,7 +24,7 @@ public class Curso {
 	private Long id;
 	private String nome;
 	private String categoria;
-	private Boolean ativo;
+	private Boolean ativo = true;
 
 	public Curso(DadosCurso curso) {
 		this.nome = curso.nome();

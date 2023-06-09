@@ -1,7 +1,6 @@
 package com.br.alura.forum.domain.resposta;
 
 import com.br.alura.forum.domain.topico.DadosCadastroTopico;
-import com.br.alura.forum.domain.topico.Topico;
 import com.br.alura.forum.domain.usuario.DadosUsuario;
 
 import jakarta.validation.Valid;

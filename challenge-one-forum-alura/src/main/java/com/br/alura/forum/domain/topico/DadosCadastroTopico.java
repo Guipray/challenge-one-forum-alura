@@ -12,7 +12,6 @@ public record DadosCadastroTopico(
 		String titulo,
 		@NotBlank
 		String mensagem,
-		StatusTopico status,
 		@NotNull
 		@Valid
 		DadosUsuario autor,

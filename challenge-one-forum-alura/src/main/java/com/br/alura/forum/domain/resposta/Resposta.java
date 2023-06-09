@@ -46,7 +46,7 @@ public class Resposta {
 	@ManyToOne
 	private Usuario autor;
 	private Boolean solucao = false;
-	private Boolean ativo;
+	private Boolean ativo = true;
 	
 	public Resposta(@Valid DadosCadastroResposta dados) {
 		this.mensagem = dados.mensagem();
@@ -69,10 +69,10 @@ public class Resposta {
 		if (dados.status() != null) {
 			if (dados.status() == StatusTopico.FECHADO || dados.status() == StatusTopico.SOLUCIONADO) {
 				this.solucao = true;
-				this.topico.atualizarInformacoes(new DadosAtualizacaoTopico(null, null, dados.status(), null, null));
+				this.topico.atualizarStatus(dados.status());
 			} else {
 				this.solucao = false;
-				this.topico.atualizarInformacoes(new DadosAtualizacaoTopico(null, null, dados.status(), null, null));
+				this.topico.atualizarStatus(dados.status());
 			}
 			
 		}

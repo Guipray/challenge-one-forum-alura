@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.br.alura.forum.domain.curso.Curso;
+import com.br.alura.forum.domain.resposta.DadosDetalhamentoResposta;
+import com.br.alura.forum.domain.resposta.DadosListagemResposta;
 import com.br.alura.forum.domain.resposta.Resposta;
 
 import lombok.AllArgsConstructor;

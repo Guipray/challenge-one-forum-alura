@@ -11,6 +11,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
 	Usuario findByNome(String nome);
 
-	Page<Usuario> findByNome(String nomeUsuario, Pageable paginacao);
+	Page<Usuario> findByAtivoTrueAndNome(String nomeUsuario, Pageable paginacao);
+
+	Page<Usuario> findAllByAtivoTrue(Pageable paginacao);
 	
 }

@@ -109,13 +109,13 @@ public class TopicoController {
 			if (!Pattern.matches("\\d{4}", anoCriacao)) {
 				return ResponseEntity.badRequest().build();
 			}
-			page = topicoRepository.findByCursoNomeAndDataCriacaoBetween(nomeCurso, dataInicio, dataFim, paginacao);
+			page = topicoRepository.findByAtivoTrueAndCursoNomeAndDataCriacaoBetween(nomeCurso, dataInicio, dataFim, paginacao);
 		} else if (nomeCurso != null) {
-			page = topicoRepository.findByCursoNome(nomeCurso, paginacao);
+			page = topicoRepository.findByAtivoTrueAndCursoNome(nomeCurso, paginacao);
 		} else if (anoCriacao != null) {
-			page = topicoRepository.findByDataCriacaoBetween(dataInicio, dataFim, paginacao);
+			page = topicoRepository.findByAtivoTrueAndDataCriacaoBetween(dataInicio, dataFim, paginacao);
 		} else {
-			page = topicoRepository.findAll(paginacao);
+			page = topicoRepository.findAllByAtivoTrue(paginacao);
 		}
 
 		var detalhamentoTopicos = page.map(topico -> new DadosListagemTopico(new TopicoDTO(topico)));

@@ -74,9 +74,9 @@ public class UsuarioController {
 		Page<Usuario> page;
 		
 		if (nomeUsuario != null) {
-			page = repository.findByNome(nomeUsuario, paginacao);
+			page = repository.findByAtivoTrueAndNome(nomeUsuario, paginacao);
 		} else {
-			page = repository.findAll(paginacao);
+			page = repository.findAllByAtivoTrue(paginacao);
 		}
 		
 		var detalhamentoUsuarios = page.map(usuario -> new DadosListagemUsuario(usuario));

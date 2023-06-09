@@ -115,9 +115,9 @@ public class RespostaController {
 			if (!Pattern.matches("\\d{4}", anoCriacao)) {
 				return ResponseEntity.badRequest().build();
 			}
-			page = respostaRepository.findByDataCriacaoBetween(dataInicio, dataFim, paginacao);
+			page = respostaRepository.findByAtivoTrueAndDataCriacaoBetween(dataInicio, dataFim, paginacao);
 		} else {
-			page = respostaRepository.findAll(paginacao);
+			page = respostaRepository.findAllByAtivoTrue(paginacao);
 		}
 
 		var detalhamentoRespostas = page.map(resposta -> new DadosListagemResposta(new RespostaDTO(resposta)));

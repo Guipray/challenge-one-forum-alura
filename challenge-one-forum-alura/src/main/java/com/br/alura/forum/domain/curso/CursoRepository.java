@@ -8,6 +8,8 @@ public interface CursoRepository extends JpaRepository<Curso, Long> {
 	
 	Curso findByNomeAndCategoria(String nome, String categoria);
 
-	Page<Curso> findByCategoria(String categoria, Pageable paginacao);
+	Page<Curso> findByAtivoTrueAndCategoria(String categoria, Pageable paginacao);
+
+	Page<Curso> findAllByAtivoTrue(Pageable paginacao);
 	
 }

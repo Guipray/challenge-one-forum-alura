@@ -11,15 +11,17 @@ import com.br.alura.forum.domain.resposta.Resposta;
 
 public interface TopicoRepository extends JpaRepository<Topico, Long> {
 
-	Page<Topico> findByCursoNomeAndDataCriacaoBetween(String nomeCurso, LocalDateTime dataInicio, LocalDateTime dataFim,
-			Pageable paginacao);
+	Page<Topico> findByAtivoTrueAndCursoNomeAndDataCriacaoBetween(String nomeCurso, LocalDateTime dataInicio,
+			LocalDateTime dataFim, Pageable paginacao);
 
-	Page<Topico> findByCursoNome(String nomeCurso, Pageable paginacao);
+	Page<Topico> findByAtivoTrueAndCursoNome(String nomeCurso, Pageable paginacao);
 
-	Page<Topico> findByDataCriacaoBetween(LocalDateTime dataInicio, LocalDateTime dataFim, Pageable paginacao);
+	Page<Topico> findByAtivoTrueAndDataCriacaoBetween(LocalDateTime dataInicio, LocalDateTime dataFim, Pageable paginacao);
 
 	Topico findByTitulo(String titulo);
 
 	Topico findByMensagem(String mensagem);
+
+	Page<Topico> findAllByAtivoTrue(Pageable paginacao);
 
 }

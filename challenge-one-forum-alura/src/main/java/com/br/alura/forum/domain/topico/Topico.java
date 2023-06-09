@@ -55,7 +55,7 @@ public class Topico {
 	@OneToMany(mappedBy = "topico")
 	private List<Resposta> respostas = new ArrayList<>();
 	
-	private Boolean ativo;
+	private Boolean ativo = true;
 	
 	public Topico(@Valid DadosCadastroTopico dados) {
 		this.titulo = dados.titulo();
@@ -96,6 +96,10 @@ public class Topico {
 
 	public void setResposta(Resposta resposta) {
 		this.respostas.add(resposta);
+	}
+
+	public void atualizarStatus(StatusTopico status) {
+		this.status = status;
 	}
 
 }

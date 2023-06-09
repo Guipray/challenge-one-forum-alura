@@ -63,9 +63,9 @@ public class CursoController {
 		Page<Curso> page;
 
 		if (categoria != null) {
-			page = repository.findByCategoria(categoria, paginacao);
+			page = repository.findByAtivoTrueAndCategoria(categoria, paginacao);
 		} else {
-			page = repository.findAll(paginacao);
+			page = repository.findAllByAtivoTrue(paginacao);
 		}
 
 		var detalhamentoCurso = page.map(DadosListagemCurso::new);
